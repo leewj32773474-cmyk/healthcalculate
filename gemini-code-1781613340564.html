@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioPulse Global - 단백질 가성비 환산기</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-start min-h-screen p-4 pt-12 md:pt-20 pb-20">
+
+    <!-- 1. 계산기 섹션 -->
+    <div class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl">
+        
+        <!-- 로고 및 타이틀 -->
+        <div class="text-center mb-6">
+            <span class="text-xs font-bold tracking-widest text-emerald-400 uppercase">BioPulse Global Project</span>
+            <h1 class="text-2xl font-bold mt-1 text-white">단백질 가성비 팩트 폭행기</h1>
+            <p class="text-sm text-gray-400 mt-1">광고에 속지 마세요. 스펙만 입력하면 호구 등급을 매겨드립니다.</p>
+        </div>
+
+        <!-- 입력 폼 -->
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">제품 가격 (원)</label>
+                <input type="number" id="price" placeholder="예: 59000" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">총 용량 (g)</label>
+                <input type="number" id="totalWeight" placeholder="예: 2000" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">100g당 단백질 함량 (g)</label>
+                <input type="number" id="proteinPer100g" placeholder="예: 75" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-emerald-500 transition">
+            </div>
+            
+            <button onclick="calculate()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-gray-950 font-bold py-3 rounded-lg transition mt-2 cursor-pointer shadow-lg shadow-emerald-500/20">
+                가성비 계산하기 ⚡
+            </button>
+        </div>
+
+        <!-- 결과 창 (처음엔 숨김) -->
+        <div id="resultBox" class="hidden mt-6 pt-6 border-t border-gray-800 space-y-4">
+            <div class="text-center py-3 rounded-xl bg-gray-950 border border-gray-800">
+                <span class="text-xs text-gray-400">순수 단백질 1g당 가격</span>
+                <div class="text-3xl font-extrabold text-white mt-1"><span id="pricePerG" class="text-emerald-400">0</span>원</div>
+            </div>
+
+            <!-- 등급 판정 -->
+            <div id="gradeBadge" class="text-center font-bold py-2 rounded-lg text-sm"></div>
+
+            <!-- 화폐 환산 비교 -->
+            <div class="bg-gray-950/50 p-4 rounded-xl border border-gray-800 text-xs space-y-2.5">
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400">🐔 닭가슴살 대비 가치</span>
+                    <span id="chickenValue" class="font-semibold text-gray-200"></span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-gray-400">🥚 삶은 계란 대비 가치</span>
+                    <span id="eggValue" class="font-semibold text-gray-200"></span>
+                </div>
+            </div>
+
+            <!-- 하단 앵커 (진짜 1등 보러가기 버튼) -->
+            <div class="text-center pt-2">
+                <p class="text-xs text-gray-500 mb-2">혹시 내가 흑우 등급이라면?</p>
+                <a href="#ranking" class="block w-full text-center bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-semibold py-2.5 text-xs rounded-lg transition">
+                    🏆 광고 거품 없는 진짜 가성비 1등 제품 보기
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 2. 수익형 랭킹 섹션 -->
+    <div id="ranking" class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-2xl mt-8">
+        <div class="text-center mb-4">
+            <h2 class="text-lg font-bold text-white">🏆 BioPulse 가성비 검증 탑티어</h2>
+            <p class="text-xs text-gray-400 mt-0.5">광고비를 받지 않고 오직 '성분 단가'로만 세운 순위입니다.</p>
+        </div>
+        
+        <div class="space-y-3">
+            <!-- 1등 제품 (해외직구) -->
+            <div class="p-4 bg-emerald-950/20 border border-emerald-500/20 rounded-xl flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] font-bold bg-emerald-500/10 text-emerald-400 px-1.5 py-0.5 rounded">RANK 01 · 직구추천</span>
+                    <h3 class="text-sm font-bold text-white mt-1.5">마이프로틴 임팩트 웨이 (대용량)</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">단백질 1g당 단가: <span class="text-emerald-400 font-bold">약 29원 ~ 32원</span></p>
+                </div>
+                <!-- 링크 주소는 추후 본인 제휴 링크로 대체하세요 -->
+                <a href="https://www.myprotein.co.kr/" target="_blank" rel="noopener noreferrer" class="bg-emerald-500 text-gray-950 text-xs font-bold px-3 py-2 rounded-lg hover:bg-emerald-400 transition shrink-0 ml-2">
+                    최저가 ↗
+                </a>
+            </div>
+
+            <!-- 2등 제품 (국내 배송) -->
+            <div class="p-4 bg-gray-950/40 border border-gray-800 rounded-xl flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] font-bold bg-blue-500/10 text-blue-400 px-1.5 py-0.5 rounded">RANK 02 · 국내배송</span>
+                    <h3 class="text-sm font-bold text-white mt-1.5">NS포대유청 WPC 원료형</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">단백질 1g당 단가: <span class="text-blue-400 font-bold">약 34원</span></p>
+                </div>
+                <!-- 링크 주소는 추후 본인 쿠팡 파트너스 링크로 대체하세요 -->
+                <a href="https://www.coupang.com/" target="_blank" rel="noopener noreferrer" class="bg-gray-800 text-white border border-gray-700 text-xs font-bold px-3 py-2 rounded-lg hover:bg-gray-700 transition shrink-0 ml-2">
+                    최저가 ↗
+                </a>
+            </div>
+
+            <!-- 3등 제품 (유당불내증용 WPI) -->
+            <div class="p-4 bg-gray-950/40 border border-gray-800 rounded-xl flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] font-bold bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded">RANK 03 · 설사방지 WPI</span>
+                    <h3 class="text-sm font-bold text-white mt-1.5">CGN 캘리포니아 골드 뉴트리션 WPI</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">단백질 1g당 단가: <span class="text-amber-400 font-bold">약 42원</span></p>
+                </div>
+                <!-- 링크 주소는 추후 본인 아이허브 링크로 대체하세요 -->
+                <a href="https://kr.iherb.com/" target="_blank" rel="noopener noreferrer" class="bg-gray-800 text-white border border-gray-700 text-xs font-bold px-3 py-2 rounded-lg hover:bg-gray-700 transition shrink-0 ml-2">
+                    최저가 ↗
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 푸터 -->
+    <p class="text-xs text-gray-600 mt-8 text-center leading-relaxed">
+        © 2026 BioPulse Global. All Rights Reserved.<br>
+        <span class="text-[10px] text-gray-700">본 플랫폼은 개인정보를 일절 수집 및 저장하지 않는 안전한 무자각 시스템입니다.</span>
+    </p>
+
+    <!-- 계산 로직 자바스크립트 -->
+    <script>
+        function calculate() {
+            const price = parseFloat(document.getElementById('price').value);
+            const totalWeight = parseFloat(document.getElementById('totalWeight').value);
+            const proteinPer100g = parseFloat(document.getElementById('proteinPer100g').value);
+
+            if (!price || !totalWeight || !proteinPer100g) {
+                alert('모든 숫자를 정확히 입력해주세요!');
+                return;
+            }
+
+            const totalProtein = totalWeight * (proteinPer100g / 100);
+            const pricePerG = (price / totalProtein).toFixed(1);
+
+            document.getElementById('pricePerG').innerText = pricePerG;
+
+            const gradeBadge = document.getElementById('gradeBadge');
+            if (pricePerG <= 35) {
+                gradeBadge.className = "text-center font-bold py-2 rounded-lg text-sm bg-emerald-950 text-emerald-400 border border-emerald-800";
+                gradeBadge.innerText = "👑 판정: 혜자 테크트리 (지구 최강 가성비)";
+            } else if (pricePerG <= 60) {
+                gradeBadge.className = "text-center font-bold py-2 rounded-lg text-sm bg-blue-950 text-blue-400 border border-blue-800";
+                gradeBadge.innerText = "😐 판정: 평타 (딱 돈 값 하는 중)";
+            } else {
+                gradeBadge.className = "text-center font-bold py-2 rounded-lg text-sm bg-red-950 text-red-400 border border-red-800";
+                gradeBadge.innerText = "🐂 판정: 극한의 흑우 (마케팅에 돈 버리는 중)";
+            }
+
+            const chickenCost = Math.round(totalProtein * 56);
+            const chickenDiff = chickenCost - price;
+            let chickenText = `${chickenCost.toLocaleString()}원치 분량`;
+            if (chickenDiff > 0) chickenText += ` (${chickenDiff.toLocaleString()}원 이득!)`;
+
+            const eggCount = Math.round(totalProtein / 6);
+            const eggText = `삶은 계란 ${eggCount}개 까먹는 분량`;
+
+            document.getElementById('chickenValue').innerText = chickenText;
+            document.getElementById('eggValue').innerText = eggText;
+
+            document.getElementById('resultBox').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
